@@ -18,7 +18,7 @@ module.exports = function(app) {
   // (ex: localhost:PORT/api/admin... they are shown a JSON of the data in the table)
   // ---------------------------------------------------------------------------
 
-  app.get("/api/friends.js", function(req, res) {
+  app.get("/api/friends", function(req, res) {
     res.json(friendData);
   });
 
@@ -45,6 +45,7 @@ module.exports = function(app) {
           diff = newEntry.scores[i] - e.scores[i];
         }
 
+        console.log("Diff: " + diff);
         if(!runningTotal){
 
           runningTotal = diff;
@@ -54,15 +55,20 @@ module.exports = function(app) {
         }
       }
 
-      if(runningTotal < bestTotal) {
+      console.log("Running total: " + runningTotal);
+      if(!bestTotal || runningTotal < bestTotal) {
 
         bestTotal = runningTotal;
         bestMatch = e;
       }
+
+      console.log("Best total: " + bestTotal);
+      console.log("Best match: " + bestMatch);
     });
 
 
-    res.send({data: bestMatch});
+    friendData.push(newEntry);
+    res.send(bestMatch);
   });
 
 };
