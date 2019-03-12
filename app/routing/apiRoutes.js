@@ -18,13 +18,51 @@ module.exports = function(app) {
   // (ex: localhost:PORT/api/admin... they are shown a JSON of the data in the table)
   // ---------------------------------------------------------------------------
 
-  app.get("/api/friends", function(req, res) {
+  app.get("/api/friends.js", function(req, res) {
     res.json(friendData);
   });
 
 
   app.post("/api/friends", function(req, res) {
    
+    let newEntry = req.body;
+
+    let bestMatch;
+    let bestTotal;
+
+    friendData.forEach(e => {
+      
+      let runningTotal;
+      for(let i = 0; i < e.scores.length; i++){
+
+        let diff
+        if(e.scores[i] >= newEntry.scores[i]){
+
+          diff = e.scores[i] - newEntry.scores[i];
+
+        } else {
+
+          diff = newEntry.scores[i] - e.scores[i];
+        }
+
+        if(!runningTotal){
+
+          runningTotal = diff;
+        } else {
+
+          runningTotal += diff;
+        }
+      }
+
+      if(runningTotal < bestTotal) {
+
+        bestTotal = runningTotal;
+        bestMatch = e;
+      }
+    });
+
+
+    res.send({data: bestMatch});
   });
 
 };
